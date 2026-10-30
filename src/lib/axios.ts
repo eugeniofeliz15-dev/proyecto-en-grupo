@@ -12,9 +12,22 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      const url = err.config?.url || "";
+      if (!url.includes("/login")) {
+        useAuthStore.getState().logout();
+        window.location.href = "/login?sesion=expirada";
+      }
+    }
+    return Promise.reject(err);
+  },
+);
 
 // TODO [A]: interceptor de respuesta
 // - si la API responde 401 el token ya no sirve: hacer logout()
