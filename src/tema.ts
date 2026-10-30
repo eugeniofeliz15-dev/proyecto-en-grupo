@@ -7,18 +7,24 @@ export interface Categoria {
 }
 
 export const tema = {
-  nombre: "mercado",
-  inicial: "M",
-  emoji: "🛒",
+  nombre: "Ropa",
+  inicial: "R",
+  emoji: "👕",
   login: {
     kicker: "Tu tienda, más simple",
-    titulo: "Compra lo que te hace bien.",
+    titulo: "Viste a tu estilo.",
     texto:
-      "Encuentra productos seleccionados para tu día a día y disfruta una experiencia de compra sencilla.",
+      "Encuentra ropa seleccionada para tu día a día y disfruta una experiencia de compra sencilla.",
   },
-  // categorias de su tienda, con el prefijo del grupo. ejemplo:
-  // { valor: "Ropa-Polos", etiqueta: "Polos" },
-  categorias: [] as Categoria[],
+  // La API compara categoría por texto exacto. Mantener aquí los valores
+  // usados al crear productos de Ropa.
+  categorias: [
+    { valor: "Ropa-Polos", etiqueta: "Polos" },
+    { valor: "Ropa-Pantalones", etiqueta: "Pantalones" },
+    { valor: "Ropa-Camisas", etiqueta: "Camisas" },
+    { valor: "Ropa-Chamarras", etiqueta: "Chamarras" },
+    { valor: "Ropa-Accesorios", etiqueta: "Accesorios" },
+  ] as Categoria[],
 };
 
 export function etiquetaCategoria(valor: string) {

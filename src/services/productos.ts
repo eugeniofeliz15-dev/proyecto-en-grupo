@@ -4,6 +4,7 @@ import type {
   PaginaProductos,
   Producto,
 } from "../types/producto";
+import { tema } from "../tema";
 
 interface ProductoApi {
   id: number;
@@ -43,13 +44,30 @@ export const productosService = {
     porPagina: number,
     categoria: string,
   ): Promise<PaginaProductos> => {
-    console.warn("TODO [C]: getPagina", pagina, porPagina);
-    const respuesta = await api.get<ProductoApi[]>("/products/", {
-      params: categoria !== "Todas" ? { category: categoria } : {},
-    });
+    const categorias =
+      categoria === "Todas"
+        ? tema.categorias.map((item) => item.valor)
+        : [categoria];
+    const skip = categoria === "Todas" ? 0 : (pagina - 1) * porPagina;
+    const limit = categoria === "Todas" ? pagina * porPagina + 1 : porPagina + 1;
+
+    const respuestas = await Promise.all(
+      categorias.map((category) =>
+        api.get<ProductoApi[]>("/products/", {
+          params: { skip, limit, category },
+        }),
+      ),
+    );
+    const productos = respuestas.flatMap(({ data }) => data.map(convertirProducto));
+    const inicio = categoria === "Todas" ? (pagina - 1) * porPagina : 0;
+    const productosPagina = productos.slice(inicio, inicio + porPagina);
+
     return {
-      productos: respuesta.data.map(convertirProducto),
-      hayMas: false,
+      productos: productosPagina,
+      hayMas:
+        categoria === "Todas"
+          ? productos.length > pagina * porPagina
+          : productos.length > porPagina,
     };
   },
 
