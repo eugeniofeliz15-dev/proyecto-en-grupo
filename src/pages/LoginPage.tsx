@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { loginSchema, type LoginFormData } from "../schemas/loginSchema";
 import { authService } from "../services/auth";
 import { useAuthStore } from "../store/useAuthStore";
 import { tema } from "../tema";
+import { AlertaBanner } from "../components/ui/AlertaBanner";
 
 const ANIO = new Date().getFullYear();
 
@@ -29,6 +30,9 @@ export function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
+
+  const [searchParams] = useSearchParams();
+  const sesionExpirada = searchParams.get("sesion") === "expirada"
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -70,6 +74,10 @@ export function LoginPage() {
             </div>
             <p className="text-sm text-marca-200">© {ANIO} {tema.nombre}</p>
           </div>
+
+          {sesionExpirada && (
+            <AlertaBanner tipo="info" titulo="Tu Sesión Expiró" mensaje="Debes volver a logearte"/>
+          )}
 
           <div className="flex items-center justify-center p-7 sm:p-12 lg:p-14">
             <div className="w-full max-w-sm">
