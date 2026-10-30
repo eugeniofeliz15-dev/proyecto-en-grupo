@@ -2,8 +2,11 @@ interface Props {
   className?: string;
 }
 
-// TODO [D]: bloque gris con animate-pulse, el tamaño viene por className
-// ej: <Skeleton className="h-4 w-32" />
 export function Skeleton({ className = "" }: Props) {
-  return <div className={className} />;
+  return (
+    <div
+      aria-hidden="true"
+      className={`animate-pulse rounded-md bg-stone-200 ${className}`}
+    />
+  );
 }
